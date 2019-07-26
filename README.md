@@ -15,7 +15,10 @@
 - duquanben.py : 读全本 : https://www.duquanben.com/
 - piaotian5.py : 飘天网站最新的(以前的估计都被封了) http://www.piaotian5.com/
 - biquge.py : 笔趣阁 http://www.biqujia.com
+<<<<<<< HEAD
 - async_biquge.py : 笔趣阁 异步爬虫
+=======
+>>>>>>> origin/master
 
 
 ## 待续....

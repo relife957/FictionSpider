@@ -50,7 +50,10 @@ def getContent(url):
     return content[0].get_text()
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 def main():
     url = "http://www.biqujia.com/book/0/202/"
     directory = getDirectory(url)
@@ -72,7 +75,12 @@ def main():
     # with open('剑来.txt','w',encoding='utf-8')as f:
     #     f.write(content)
     # pprint(content)
+<<<<<<< HEAD
 
 
 if __name__ == '__main__':
     main()
+=======
+if __name__ == '__main__':
+    main()
+>>>>>>> origin/master

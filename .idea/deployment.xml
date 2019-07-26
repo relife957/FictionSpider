@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" persistUploadOnCheckin="false">
     <serverData>
       <paths name="wangmanrong@10.10.14.120:22">
         <serverdata>
