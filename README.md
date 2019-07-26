@@ -10,15 +10,12 @@
 
 
 ## 文件
-- UU.py : uu网站 : https://www.uukanshu.com/
-- piaotian.py : 飘天网站(该网站暂时进不去,网站问题)
-- duquanben.py : 读全本 : https://www.duquanben.com/
-- piaotian5.py : 飘天网站最新的(以前的估计都被封了) http://www.piaotian5.com/
-- biquge.py : 笔趣阁 http://www.biqujia.com
-<<<<<<< HEAD
-- async_biquge.py : 笔趣阁 异步爬虫
-=======
->>>>>>> origin/master
+- ./UU/UU.py : uu网站 : https://www.uukanshu.com/
+- ./飘天/piaotian.py : 飘天网站(该网站暂时进不去,网站问题)
+- ./读全本/duquanben.py : 读全本 : https://www.duquanben.com/
+- ./飘天/piaotian5.py : 飘天网站最新的(以前的估计都被封了) http://www.piaotian5.com/
+- ./笔趣阁biquge.py : 笔趣阁 http://www.biqujia.com
+- ./笔趣阁/async_biquge.py : 笔趣阁 异步爬虫
 
 
 ## 待续....
