@@ -12,12 +12,18 @@
 """
 __author__ = 'wangyi'
 
-import requests
-import re
-from bs4 import BeautifulSoup
-import aiohttp
 import asyncio
-from prettyprinter import pprint
+import re
+import logging
+import aiohttp
+import requests
+from bs4 import BeautifulSoup
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+
+titles = []
+urls = []
 
 
 def getHtml(url):
@@ -34,19 +40,20 @@ def getDirectory(baseUrl):
     html = getHtml(baseUrl)
     pattern = "<dd><a href=\"(.*?)\">(.*?)</a></dd>"
     result = re.findall(pattern, html)
-    directory = {}
     baseUrl = baseUrl[:22]
-    for tumple in result:
-        url = baseUrl + tumple[0]
-        directory[tumple[1]] = url
-
-    return directory
+    for _tuple in result:
+        url = baseUrl + _tuple[0]
+        titles.append(_tuple[1])
+        urls.append(url)
 
 
 async def fetch(session, url):
-    async with session.get(url) as response:
-        return await response.text(encoding='gbk')
-
+    try:
+        async with session.get(url, timeout=60) as response:
+            return await response.text(encoding='gbk')
+    except asyncio.TimeoutError:
+        logging.error(f"{url} cannot get html information")
+        return None
 
 def get_content(html):
     soup = BeautifulSoup(html, 'lxml')
@@ -57,35 +64,51 @@ def get_content(html):
     return content
 
 
-async def main():
-    url = "http://www.biqujia.com/book/0/202/"
-    directory = getDirectory(url)
+async def section_crawl(f, start, step):
     tasks = []
     async with aiohttp.ClientSession() as session:
-        for item in directory.items():
-            tasks.append(fetch(session, item[1]))
+        for i in range(start, start + step):
+            if i >= len(titles):
+                break
+            task = fetch(session, urls[i])
+            tasks.append(task)
         htmls = await asyncio.gather(*tasks)
+    for i in range(start, start + step):
+        if i > len(titles):
+            break
+        logging.info('start insert ' + titles[i])
 
-    titles = list(directory.keys())
-    if len(titles) == len(htmls):
-        size = len(titles)
-        with open('剑来.txt', 'w')as f:
-            for i in range(size):
-                print('start insert ' + titles[i])
-                try:
-                    f.write(titles[i] + '\n')
-                    f.write(get_content(htmls[i]))
-                    f.write('\n\n')
-                except Exception as e:
-                    print(e)
-                    print('{} insert failed!!'.format(titles[i]))
-                    continue
+        try:
+            f.write(titles[i] + '\n')
+            if htmls[i - start] is None:
+                continue
+            f.write(get_content(htmls[i-start]))
+            f.write('\n\n')
+        except Exception as e:
+            logging.info(f"{len(htmls)}, {len(titles)}, {i-start}")
+            logging.error(e)
+            logging.error('{} insert failed!!'.format(titles[i]))
+            continue
+
+
+def main():
+    url = "http://www.biqujia.com/book/5/5230/"
+    getDirectory(url)
+    if len(titles) != len(urls):
+        return
+    step = 10
+    f = open("诡秘之主.txt", 'w')
+    loop = asyncio.get_event_loop()
+    for i in range(0, len(titles), step):
+        logging.info(f"开始抓取{i}-{i+step}的章节")
+        loop.run_until_complete(section_crawl(f, i, step))
 
 
 from datetime import datetime as dt
 
 if __name__ == '__main__':
     start = dt.now()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
-    print(dt.now() - start)
+    # loop = asyncio.get_event_loop()
+    # loop.run_until_complete(main())
+    main()
+    logging.info(f"整个爬取过程共耗时 {dt.now() - start} s")

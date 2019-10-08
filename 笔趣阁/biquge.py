@@ -15,8 +15,10 @@ __author__ = 'wangyi'
 import requests
 import re
 from bs4 import BeautifulSoup
-from prettyprinter import pprint
+import logging
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 def getHtml(url):
     try:
@@ -50,24 +52,20 @@ def getContent(url):
     return content[0].get_text()
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
 def main():
-    url = "http://www.biqujia.com/book/0/202/"
+    url = "http://www.biqujia.com/book/5/5230/"
     directory = getDirectory(url)
-    with open("./剑来.txt", 'w',encoding='utf-8') as f:
+    with open("./诡秘之主.txt", 'w',encoding='utf-8') as f:
         for item in directory.items():
             try:
-                print(item[0])
+                logging.info(item[0])
                 f.write(item[0] + '\n')
                 content = getContent(item[1])
                 content = content.replace(u'\xa0\xa0\xa0\xa0', u'\n')
                 f.write(content)
                 f.write('\n')
             except:
-                print("error at " + str(item))
+                logging.error("error at " + str(item))
                 continue
     # url = 'http://www.biqujia.com/book/0/202/11224.html'
     # content = getContent(url)
@@ -75,12 +73,7 @@ def main():
     # with open('剑来.txt','w',encoding='utf-8')as f:
     #     f.write(content)
     # pprint(content)
-<<<<<<< HEAD
 
 
 if __name__ == '__main__':
     main()
-=======
-if __name__ == '__main__':
-    main()
->>>>>>> origin/master
