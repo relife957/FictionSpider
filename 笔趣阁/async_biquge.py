@@ -38,7 +38,8 @@ def getHtml(url):
 
 def getDirectory(baseUrl):
     html = getHtml(baseUrl)
-    pattern = "<dd><a href=\"(.*?)\">(.*?)</a></dd>"
+    # print(html)
+    pattern = "<dd><a href=\"(.*?)\"  >(.*?)</a></dd>"
     result = re.findall(pattern, html)
     baseUrl = baseUrl[:22]
     for _tuple in result:
@@ -48,12 +49,14 @@ def getDirectory(baseUrl):
 
 
 async def fetch(session, url):
-    try:
-        async with session.get(url, timeout=60) as response:
-            return await response.text(encoding='gbk')
-    except asyncio.TimeoutError:
-        logging.error(f"{url} cannot get html information")
-        return None
+    for i in range(3):
+        try:
+            async with session.get(url, timeout=60) as response:
+                # 这里的编码，参考具体的html编码，在<head>标签内查看
+                return await response.text(encoding='gbk')
+        except asyncio.TimeoutError:
+            logging.error(f"{url} get html information timeout, try count {i}")
+            continue
 
 def get_content(html):
     soup = BeautifulSoup(html, 'lxml')
@@ -92,12 +95,12 @@ async def section_crawl(f, start, step):
 
 
 def main():
-    url = "http://www.biqujia.com/book/5/5230/"
+    url = "http://www.biqujia.com/book/0/180/"
     getDirectory(url)
     if len(titles) != len(urls):
         return
     step = 10
-    f = open("诡秘之主.txt", 'w')
+    f = open("修真四万年2.txt", 'w')
     loop = asyncio.get_event_loop()
     for i in range(0, len(titles), step):
         logging.info(f"开始抓取{i}-{i+step}的章节")
